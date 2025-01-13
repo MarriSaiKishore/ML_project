@@ -32,17 +32,46 @@ class ModelTrainer:
         try:
             logging.info("Splitting training and testing input data.")
             X_train,y_train,X_test,y_test=(train_array[:,:-1],train_array[:,-1],test_array[:,:-1],test_array[:,-1])
-            models={
-                "Random Forest":RandomForestRegressor(),
-                "Decision Tree":DecisionTreeRegressor(),
-                "Gradient Boosting":GradientBoostingRegressor(),
-                "Linear Regressor":LinearRegression(),
-                "K N N Regressor":KNeighborsRegressor(),
-                "XGBRegressor":XGBRegressor(),
-                "CatBoosting ":CatBoostRegressor(),
-                "Adaboost":AdaBoostRegressor()
+            models = {
+                "RandomForestRegressor": RandomForestRegressor(),
+                "DecisionTreeRegressor": DecisionTreeRegressor(),
+                "GradientBoostingRegressor": GradientBoostingRegressor(),
+                "LinearRegression": LinearRegression(),
+                "KNeighborsRegressor": KNeighborsRegressor(),
+                "CatBoostRegressor": CatBoostRegressor(),
+                "AdaBoostRegressor": AdaBoostRegressor()
+            }
+
+            params = {
+                "DecisionTreeRegressor": {
+                    'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson']
+                },
+                "RandomForestRegressor": {
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "GradientBoostingRegressor": {
+                    'learning_rate': [0.1, 0.01, 0.05, 0.001],
+                    'subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "LinearRegression": {},
+                "KNeighborsRegressor": {
+                    'n_neighbors': [5, 7, 9, 11]
+                },
+                "CatBoostRegressor": {
+                    'depth': [6, 8, 10],
+                    'learning_rate': [0.1, 0.01, 0.05],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoostRegressor": {
+                    'learning_rate': [0.1, 0.01, 0.05, 0.001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
                 }
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models)
+            }
+
+
+            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models
+                                             ,param=params)
 
             best_model_score=max(sorted(model_report.values()))
 
